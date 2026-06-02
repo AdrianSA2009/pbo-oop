@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class Pengguna extends Authenticatable
 {
@@ -14,24 +15,18 @@ class Pengguna extends Authenticatable
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'nama', 
-        'username', 
-        'password', 
-        'role'
-    ];
+    // Encapsulation
+    protected $fillable = ['nama', 'username', 'password', 'role'];
 
-    protected $hidden = [
-        'password',
-    ];
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // Setter untuk encapsulation password
+    public function setPasswordAttribute($value)
     {
-        return [
-            'password' => 'hashed',
-        ];
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    // Getter untuk encapsulation nama
+    public function getNamaAttribute($value)
+    {
+        return ucfirst($value);
     }
 }

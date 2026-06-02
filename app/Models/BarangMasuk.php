@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\Manageable;
 
-class BarangMasuk extends Model
+class BarangMasuk extends Model implements Manageable
 {
     use HasFactory;
 
@@ -22,6 +23,11 @@ class BarangMasuk extends Model
         'tgl_masuk'
     ];
 
+    public function getTanggalMasukFormatAttribute()
+    {
+        return \Carbon\Carbon::parse($this->tgl_masuk)->format('d-M-Y');
+    }
+
     public function pengguna()
     {
         return $this->belongsTo(Pengguna::class, 'karyawan_id');
@@ -35,5 +41,9 @@ class BarangMasuk extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_id');
+    }
+
+    public function getLogActivityDetails(): string {
+        return "Barang Masuk ID " . $this->id . " sejumlah " . $this->jumlah . " ditambahkan.";
     }
 }

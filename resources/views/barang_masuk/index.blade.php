@@ -86,7 +86,7 @@
                                 <td>{{ $item->supplier->nama ?? 'N/A' }}</td>
                                 <td>{{ $item->pengguna->nama ?? 'N/A' }}</td>
                                 <td><span class="badge bg-success">+ {{ $item->jumlah }} Unit</span></td>
-                                <td>{{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
+                                <td>{{ $item->tanggal_masuk_format }}</td>
                                 <td>
                                     <form action="{{ route('barang_masuk.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Membatalkan transaksi ini akan mengurangi stok barang terkait kembali. Lanjutkan?')">
                                         @csrf

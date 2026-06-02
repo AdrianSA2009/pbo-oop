@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
-use App\Models\Barang;
+use App\Interfaces\Manageable;
 use Illuminate\Http\Request;
+use App\Models\Barang;
+use Illuminate\Support\Facades\Log;
 
 class BarangMasukController extends Controller
 {
@@ -31,6 +33,7 @@ class BarangMasukController extends Controller
         ]);
 
         $barangMasuk = BarangMasuk::create($validatedData);
+        $this->logActivity($barangMasuk);
 
         $product = Barang::find($request->barang_id);
         if ($product) {
@@ -40,6 +43,11 @@ class BarangMasukController extends Controller
 
         return redirect()->route('barang_masuk.index')
                          ->with('success', 'Transaksi Barang Masuk berhasil dicatat dan stok diperbarui.');
+    }
+    // M4: Implementasi polimorfisme yang menerima tipe data Interface Manageable
+    private function logActivity(Manageable $item)
+    {
+        Log::info($item->getLogActivityDetails());
     }
 
     public function update(Request $request, BarangMasuk $barangMasuk)

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use App\Interfaces\Manageable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class KategoriController extends Controller
 {
@@ -38,9 +40,28 @@ class KategoriController extends Controller
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diubah.');
     }
 
-    public function destroy(Kategori $kategori)
+    public function destroy(Kategori $kategori, $id)
     {
-        $kategori->delete();
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        try {
+            $kategori = Kategori::findOrFail($id);
+            
+            // M3: Memanggil metode delete() yang sudah di-override di Model.
+            // Jika kategori masih memiliki barang, otomatis melempar Exception.
+            $kategori->delete();
+
+            $this->logActivity($kategori);
+
+            return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        } catch (\Exception $e) {
+            // Menangkap pesan error dari model jika gagal dihapus
+            return redirect()->route('kategori.index')->with('error', $e->getMessage());
+        }
+    }
+
+    // M4: Polimorfisme Khusus. Method ini menerima objek APAPUN yang mengimplementasikan interface Manageable
+    private function logActivity(Manageable $item)
+    {
+        // Memanggil method signature dari kontrak interface tanpa peduli ini kelas Kategori atau BarangMasuk
+        Log::info($item->getLogActivityDetails());
     }
 }
