@@ -44,11 +44,6 @@ class BarangMasukController extends Controller
         return redirect()->route('barang_masuk.index')
                          ->with('success', 'Transaksi Barang Masuk berhasil dicatat dan stok diperbarui.');
     }
-    // M4: Implementasi polimorfisme yang menerima tipe data Interface Manageable
-    private function logActivity(Manageable $item)
-    {
-        Log::info($item->getLogActivityDetails());
-    }
 
     public function update(Request $request, BarangMasuk $barangMasuk)
     {
@@ -68,6 +63,7 @@ class BarangMasukController extends Controller
         }
 
         $barangMasuk->update($validatedData);
+        $this->logActivity($barangMasuk);
 
         return redirect()->route('barang_masuk.index')
                          ->with('success', 'Data transaksi barang masuk berhasil diperbarui.');
@@ -82,8 +78,15 @@ class BarangMasukController extends Controller
         }
 
         $barangMasuk->delete();
+        $this->logActivity($barangMasuk);
 
         return redirect()->route('barang_masuk.index')
                          ->with('success', 'Transaksi berhasil dihapus dan penyesuaian stok dilakukan.');
+    }
+
+    // Implementasi polimorfisme Interface Manageable
+    private function logActivity(Manageable $item)
+    {
+        Log::info($item->getLogActivityDetails());
     }
 }

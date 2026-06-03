@@ -2,19 +2,44 @@
 
 namespace App\Models;
 
-class Barang_Keluar extends Transaksi
-{
-    private string $destination;
+use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\Manageable;
 
-    public function __construct(string $transactionId, int $userId, string $destination)
+class Barang_Keluar extends Model implements Manageable
+{
+    protected $table = 'barang_keluar';
+    protected $fillable = [
+        'kode_transaksi',
+        'barang_id',
+        'user_id',
+        'penerima',
+        'tgl_keluar',
+        'jumlah'
+    ];
+    
+    public $timestamps = false;
+
+    public function barang()
     {
-        parent::__construct($transactionId, $userId);
-        $this->destination = $destination;
+        return $this->belongsTo(Barang::class);
     }
 
-    public function processTransaction(Product $product, int $amount): string
+    public function user()
     {
-        $product->updateStock(-$amount);
-        return "StockOut diproses: Mengirim {$amount} unit {$product->getName()} ke tujuan: {$this->destination}.";
+        return $this->belongsTo(User::class);
+    }
+
+    public function karyawan()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function unitBarang()
+    {
+        return $this->hasMany(UnitBarang::class, 'barang_keluar_id');
+    }
+
+    public function getLogActivityDetails(): string {
+        return "Barang Keluar ID " . $this->id . " sejumlah " . $this->jumlah . " dikeluarkan.";
     }
 }

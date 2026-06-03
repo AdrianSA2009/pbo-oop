@@ -15,6 +15,11 @@ class Kategori extends Model implements Manageable
     public $timestamps = false;
     protected $fillable = ['nama'];
 
+    public function barang()
+    {
+        return $this->hasMany(Barang::class, 'kategori_id'); 
+    }
+
     // Overriding metode delete()
     public function delete()
     {
