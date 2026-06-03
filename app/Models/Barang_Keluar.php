@@ -39,7 +39,9 @@ class Barang_Keluar extends Model implements Manageable
         return $this->hasMany(UnitBarang::class, 'barang_keluar_id');
     }
 
-    public function getLogActivityDetails(): string {
-        return "Barang Keluar ID " . $this->id . " sejumlah " . $this->jumlah . " dikeluarkan.";
+    // Implementasi kontrak M4 (Polimorfisme)
+    public function getLogActivityDetails(): string
+    {
+        return "Transaksi keluar dengan kode " . $this->kode_transaksi . " sejumlah " . $this->jumlah . " telah dicatat.";
     }
 }
