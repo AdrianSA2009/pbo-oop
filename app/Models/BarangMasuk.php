@@ -9,17 +9,20 @@ class BarangMasuk extends Transaksi implements Manageable
 {
     protected $table = 'barang_masuk';
 
-    public function initializeBarangMasuk()
+    public function __construct(array $attributes = [])
     {
-        $this->fillable[] = 'supplier_id';
+        // Tambahkan atribut spesifik child ke dalam fillable parent
+        $this->fillable = array_merge($this->fillable, ['supplier_id']);
+        
+        parent::__construct($attributes);
     }
 
     /**
      * Relasi ke class/tabel Supplier
      */
-    public function supplier(): BelongsTo
+    public function supplier()
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
     public function getTanggalMasukFormatAttribute(): string
