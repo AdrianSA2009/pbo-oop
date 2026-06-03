@@ -8,7 +8,7 @@ use App\Interfaces\Manageable; // M4: Import Interface
 class Supplier extends Model implements Manageable
 {
     // M2: Enkapsulasi data melalui properti fillable
-    protected $fillable = ['nama_supplier', 'alamat', 'telepon'];
+    protected $fillable = ['nama', 'alamat', 'telepon'];
 
     /**
      * Relasi One-to-Many ke BarangMasuk

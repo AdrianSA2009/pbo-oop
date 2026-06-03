@@ -44,14 +44,9 @@ class BarangKeluarController extends Controller
 
         return redirect()->route('barang_keluar.index')->with('success', 'Data barang keluar berhasil dicatat.');
     }
-
-    /**
-     * M4: Polimorfisme Khusus (Type Hinting Interface)
-     * Method ini menerima objek apa pun selama mematuhi kontrak dari Manageable Interface
-     */
+    
     private function logActivity(Manageable $item)
     {
-        // Memanggil signature method tanpa peduli apakah ini objek BarangMasuk, Kategori, atau BarangKeluar
         Log::info($item->getLogActivityDetails());
     }
 }

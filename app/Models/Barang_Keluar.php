@@ -2,46 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Interfaces\Manageable;
 
-class Barang_Keluar extends Model implements Manageable
+class BarangKeluar extends Transaksi implements Manageable
 {
     protected $table = 'barang_keluar';
-    protected $fillable = [
-        'kode_transaksi',
-        'barang_id',
-        'user_id',
-        'penerima',
-        'tgl_keluar',
-        'jumlah'
-    ];
-    
-    public $timestamps = false;
 
-    public function barang()
+    public function initializeBarangKeluar()
     {
-        return $this->belongsTo(Barang::class);
+        $this->fillable[] = 'penerima';
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function karyawan()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
+    /**
+     * Contoh method custom tambahan sesuai diagram
+     */
     public function unitBarang()
     {
-        return $this->hasMany(UnitBarang::class, 'barang_keluar_id');
+        // Logika untuk mengecek atau mengambil spesifikasi unit barang
+        return $this->barang->deskripsi ?? 'Unit tidak diketahui';
     }
 
-    // Implementasi kontrak M4 (Polimorfisme)
+    /**
+     * Implementasi wajib dari interface Manageable
+     */
     public function getLogActivityDetails(): string
     {
-        return "Transaksi keluar dengan kode " . $this->kode_transaksi . " sejumlah " . $this->jumlah . " telah dicatat.";
+        return "Barang Keluar diserahkan kepada: {$this->penerima}. Kode: {$this->kode_transaksi}.";
     }
 }

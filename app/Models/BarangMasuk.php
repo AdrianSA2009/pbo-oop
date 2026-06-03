@@ -2,48 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Interfaces\Manageable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class BarangMasuk extends Model implements Manageable
+class BarangMasuk extends Transaksi implements Manageable
 {
-    use HasFactory;
-
     protected $table = 'barang_masuk';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
 
-    protected $fillable = [
-        'kode_transaksi', 
-        'karyawan_id', 
-        'supplier_id', 
-        'barang_id', 
-        'jumlah', 
-        'tgl_masuk'
-    ];
-
-    public function getTanggalMasukFormatAttribute()
+    public function initializeBarangMasuk()
     {
-        return \Carbon\Carbon::parse($this->tgl_masuk)->format('d-M-Y');
+        $this->fillable[] = 'supplier_id';
     }
 
-    public function pengguna()
+    /**
+     * Relasi ke class/tabel Supplier
+     */
+    public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Pengguna::class, 'karyawan_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
 
-    public function supplier()
+    public function getTanggalMasukFormatAttribute(): string
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id');
+        return \Carbon\Carbon::parse($this->tanggal)->format('d F Y');
     }
 
-    public function barang()
+    public function getLogActivityDetails(): string
     {
-        return $this->belongsTo(Barang::class, 'barang_id');
-    }
-
-    public function getLogActivityDetails(): string {
-        return "Barang Masuk ID " . $this->id . " sejumlah " . $this->jumlah . " ditambahkan.";
+        return "Barang Masuk diproses. Kode: {$this->kode_transaksi}, Jumlah: {$this->jumlah}.";
     }
 }
